@@ -40,7 +40,10 @@ export async function POST(request: Request) {
     const headersWithExams = getHeaders(workbook);
 
     // Obtenemos las materias de cada carrera
-    const carreras: any = extractSubjetsForEachCarrera(workbook, headersWithExams);
+    const carreras: any = extractSubjetsForEachCarrera(
+      workbook,
+      headersWithExams
+    );
 
     return NextResponse.json(carreras);
   } catch (error) {
@@ -48,7 +51,10 @@ export async function POST(request: Request) {
   }
 }
 
-function extractSubjetsForEachCarrera(workbook: xlsx.WorkBook, headersWithExams: any[]) {
+function extractSubjetsForEachCarrera(
+  workbook: xlsx.WorkBook,
+  headersWithExams: any[]
+) {
   const carreras: any = [];
 
   for (let sheetName of sheets) {
@@ -77,7 +83,7 @@ function extractSubjetsForEachCarrera(workbook: xlsx.WorkBook, headersWithExams:
 
         materia = {
           ...materia,
-          [currentHeader]: currentCellValue,
+          [currentHeader]: currentCellValue ?? null,
         };
       }
       materias.push(materia);
