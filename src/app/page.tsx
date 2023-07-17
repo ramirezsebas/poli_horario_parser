@@ -57,8 +57,9 @@ export default function Home() {
             return;
         }
 
-        const filterCarrerasConMaterias: any = carreraConMaterias.filter((element: any) => element.carrera === selectedCarrera);
-
+        const filterCarrerasConMaterias: any = carreraConMaterias.filter((element: any) => element?.carrera === selectedCarrera);
+        console.log("filterCarrerasConMaterias");
+        console.log(filterCarrerasConMaterias);
         setFilteredMaterias(filterCarrerasConMaterias);
     }, [selectedCarrera])
 
@@ -167,7 +168,8 @@ export default function Home() {
                         setIsLoadingCarreras(false)
                     });
                 console.log(data)
-                setCarreraConMaterias(data)
+                setCarreraConMaterias(data);
+                setFilteredMaterias(data);
             })
             .catch(error => {
                 console.error(error)
@@ -273,8 +275,10 @@ export default function Home() {
             }
 
             {
-                carreraConMaterias && carreras &&
-                // Create pagination table with search and sort functionalities
+                filteredMaterias &&
+                carreras &&
+                selectedCarrera &&
+                selectedCarrera.length > 0 &&
 
                 <TableContainer>
                     <Table size='sm'>
@@ -313,7 +317,7 @@ export default function Home() {
                         </Thead>
                         <Tbody>
                             {
-                                carreraConMaterias[0].materias.map((materia: any) => {
+                                filteredMaterias[0].materias.map((materia: any) => {
                                     return <Tr key={materia.item}>
                                         <Td>{materia.item}</Td>
                                         <Td>{materia.dpto}</Td>
@@ -344,7 +348,6 @@ export default function Home() {
                                         <Td>{materia.viernes}</Td>
                                         <Td>{materia.sabado}</Td>
                                         <Td>{materia["fechas_de_clases_de_sabados_(turno_noche)"]}</Td>
-
                                     </Tr>
                                 }
                                 )
