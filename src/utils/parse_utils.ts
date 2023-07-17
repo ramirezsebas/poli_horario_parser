@@ -45,6 +45,7 @@ export function filterHeaders(headers: any[]) {
       .replace(/,/gi, "")
       .replace(/-/gi, "_")
       .replace(/\//gi, "_")
+      .replace(/\./gi, "")
       .trim();
   });
 }
@@ -55,7 +56,7 @@ export function extractHeadersFromExcel(sheet: xlsx.WorkSheet) {
   let currentCellIndex = initialColumn + initialRow;
 
   while (sheet[currentCellIndex] != null) {
-    headerExcel.push(currentCellIndex);
+    addOriginalHeader(currentCellIndex);
     const currentCell = sheet[currentCellIndex];
     const currentCellValue = currentCell.v;
 
@@ -71,6 +72,10 @@ export function extractHeadersFromExcel(sheet: xlsx.WorkSheet) {
   return headers;
 }
 
+function addOriginalHeader(currentCellIndex: string) {
+  headerExcel.push(currentCellIndex);
+}
+
 export function isLastLetter(currentCellIndex: string) {
   return currentCellIndex.match("Z") != null;
 }
@@ -82,12 +87,10 @@ export async function handleFile(
 ) {
   const files = await readdir(uploadPath);
 
-  // Delete all files in the directory
   files.forEach(async (file) => {
     await unlink(path.join(uploadPath, file));
   });
 
-  // Write the file to the directory
   await writeFile(filePath, buffer);
 }
 
