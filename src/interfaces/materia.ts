@@ -1,0 +1,31 @@
+interface Materia {
+  item: number | null;
+  dpto: string | null;
+  asignatura: string | null;
+  nivel: number | null;
+  sem_grupo: string | null;
+  sigla_carrera: string | null;
+  enfasis: string | null;
+  plan: number | null;
+  turno: string | null;
+  seccion: string | null;
+  plataforma_de_aula_virtual: string | null;
+  tit: string | null;
+  apellido: string | null;
+  nombre: string | null;
+  correo_institucional: string | null;
+  parcial_1_dia: string | null;
+  parcial_1_hora: string | null;
+  parcial_2_dia: string | null;
+  parcial_2_hora: string | null;
+  final_1_dia: string | null;
+  final_1_hora: string | null;
+  final_2_dia: string | null;
+  final_2_hora: string | null;
+  lunes: string | null;
+  martes: string | null;
+  miercoles: string | null;
+  viernes: string | null;
+  sabado: string | null;
+  fechas_de_clases_de_sabados_turno_noche: string | null;
+}

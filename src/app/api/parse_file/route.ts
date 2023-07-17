@@ -1,3 +1,4 @@
+import { Carrera } from "@/interfaces/carrera";
 import { sheets } from "@/utils/constants";
 import { getHeaders, handleFile, headerExcel } from "@/utils/parse_utils";
 import { NextResponse } from "next/server";
@@ -57,12 +58,13 @@ function extractSubjetsForEachCarrera(
 ) {
   const carreras: any = [];
 
+  // Cada sheetName corresponde a la carrera(Siglas)
   for (let sheetName of sheets) {
     const currentSheet = workbook.Sheets[sheetName];
 
-    let carrera: any = {};
+    let carrera: Carrera = {};
 
-    let materias: any = [];
+    let materias: Partial<Materia>[] = [];
 
     // TODO: Considerar que esto sea variable ya que podria variar
     // Se podria enviar desde la web?)
@@ -71,12 +73,11 @@ function extractSubjetsForEachCarrera(
 
     // Recorremos cada fila de la hojas
     while (currentSheet[currentCellIndex] != null) {
-      let materia: any = {};
+      let materia: Partial<Materia> = {};
+      // Recorremos cada columna de la fila
+      // Obs: Como ya obtuvimos los encabezados, sabemos hasta donde debe ir que seria headerExcel.length
       for (let i = 0; i < headerExcel.length; i++) {
-        const currentIndex = headerExcel[i].replace(
-          /[0-9]+/g,
-          (currentRowIndex + i).toString()
-        );
+        const currentIndex = updateRow(i, currentRowIndex);
         const currentCell = currentSheet[currentIndex];
         const currentCellValue = currentCell?.v;
         const currentHeader = headersWithExams[i];
@@ -100,6 +101,12 @@ function extractSubjetsForEachCarrera(
     carreras.push(carrera);
   }
   return carreras;
+}
+
+function updateRow(i: number, currentRowIndex: number) {
+  // Reemplzamos el numero(fila) e incrementamos el indice actual del encabezado.
+  // Como empieza en 12, ira incrementando 12 + 1, 12 + 2, 12 + 3, etc
+  return headerExcel[i].replace(/[0-9]+/g, (currentRowIndex + i).toString());
 }
 
 function _fileTypeIsExcel(file: File) {
