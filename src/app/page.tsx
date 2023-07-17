@@ -41,11 +41,26 @@ export default function Home() {
     const [carreras, setCarreras] = React.useState<any>([]);
     const [isLoadingCarreras, setIsLoadingCarreras] = React.useState<boolean>(false);
     const [errorLoadingCarreras, setErrorLoadingCarreras] = React.useState<string | null>(null);
-    const [selectedCarrera, setSelectedCarrera] = React.useState<string | null>(null);
+    const [selectedCarrera, setSelectedCarrera] = React.useState<string>("");
 
     const [carreraConMaterias, setCarreraConMaterias] = React.useState<any>(null);
+    const [filteredMaterias, setFilteredMaterias] = React.useState<any>(null);
 
 
+    useEffect(() => {
+        if (!carreraConMaterias) {
+            return;
+        }
+
+        if (selectedCarrera.length === 0) {
+            setFilteredMaterias(carreraConMaterias);
+            return;
+        }
+
+        const filterCarrerasConMaterias: any = carreraConMaterias.filter((element: any) => element.carrera === selectedCarrera);
+
+        setFilteredMaterias(filterCarrerasConMaterias);
+    }, [selectedCarrera])
 
 
     const closeErrorUploadingFile = () => {
@@ -164,6 +179,20 @@ export default function Home() {
 
     }
 
+    const downloadFileFromObject = (object: any, fileName: string) => {
+        const json = JSON.stringify(object)
+        const blob = new Blob([json], { type: 'application/json' })
+        const href = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = href;
+        link.download = fileName + ".json";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+
+
     if (isFileProcessing || isLoadingCarreras) {
         return <Center>
             <Spinner
@@ -185,6 +214,38 @@ export default function Home() {
             }} as='h1' size='2xl' noOfLines={1}>Bienvenido al Parser del Horario de la Poli</Heading>
 
             {
+                carreraConMaterias &&
+                <Button
+                    style={{
+                        marginBottom: '2rem'
+                    }}
+                    onClick={() => downloadFileFromObject(carreraConMaterias, 'horario_poli')}
+                    colorScheme='blue'
+                    size='lg'
+                    disabled={!isFileLoaded}
+                >
+                    Descargar JSON de materias con todas las carreras
+                </Button>
+            }
+
+            {
+                carreraConMaterias &&
+                selectedCarrera &&
+                selectedCarrera.length > 0 &&
+                <Button
+                    style={{
+                        marginBottom: '2rem'
+                    }}
+                    onClick={() => downloadFileFromObject(filteredMaterias, 'horario_poli')}
+                    colorScheme='blue'
+                    size='lg'
+                    disabled={!isFileLoaded}
+                >
+                    Descargar JSON de materias con la carrera seleccionado ({selectedCarrera})
+                </Button>
+            }
+
+            {
 
                 !carreraConMaterias && <Grid templateColumns='repeat(2, 1fr)' gap={6}>
                     <GridItem w='100%' h='10' >
@@ -201,10 +262,10 @@ export default function Home() {
 
             {
                 carreraConMaterias && carreras &&
-                <Select placeholder='Seleccionar la carrera'>
+                <Select placeholder='Seleccionar la carrera' value={selectedCarrera} onChange={(e) => setSelectedCarrera(e.target.value)}>
                     {
                         carreras.map((carrera: any) => {
-                            return <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+                            return <option key={carrera.id} value={carrera.nombre}>{carrera.nombre}</option>
                         })
                     }
 
@@ -213,6 +274,8 @@ export default function Home() {
 
             {
                 carreraConMaterias && carreras &&
+                // Create pagination table with search and sort functionalities
+
                 <TableContainer>
                     <Table size='sm'>
                         <Thead>
