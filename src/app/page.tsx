@@ -179,7 +179,10 @@ export default function Home() {
 
     return (
         <main className={styles.main}>
-            <Heading as='h1' size='2xl' noOfLines={1}>Bienvenido al Parser del Horario de la Poli</Heading>
+            <Heading style={{
+                textAlign: 'center',
+                marginBottom: '2rem'
+            }} as='h1' size='2xl' noOfLines={1}>Bienvenido al Parser del Horario de la Poli</Heading>
 
             {
 
@@ -194,6 +197,18 @@ export default function Home() {
                         </Container>
                     </GridItem>
                 </Grid>
+            }
+
+            {
+                carreraConMaterias && carreras &&
+                <Select placeholder='Seleccionar la carrera'>
+                    {
+                        carreras.map((carrera: any) => {
+                            return <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+                        })
+                    }
+
+                </Select>
             }
 
             {
@@ -281,17 +296,7 @@ export default function Home() {
                 </TableContainer>
             }
 
-            {
-                carreraConMaterias && carreras &&
-                <Select placeholder='Seleccionar la carrera'>
-                    {
-                        carreras.map((carrera: any) => {
-                            return <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
-                        })
-                    }
 
-                </Select>
-            }
 
 
 
