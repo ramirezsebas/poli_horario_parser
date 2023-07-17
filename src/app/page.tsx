@@ -25,7 +25,11 @@ import {
     Td,
     TableContainer,
     Select,
+    Box,
+    Icon,
+    Tooltip,
 } from '@chakra-ui/react'
+import { DownloadIcon } from '@chakra-ui/icons';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -48,6 +52,10 @@ export default function Home() {
 
     const [currentPage, setCurrentPage] = React.useState<number>(1);
     const [totalPages, setTotalPages] = React.useState<number>(0);
+
+    const [isScrapingHorario, setIsScrapingHorario] = React.useState<boolean>(false);
+    const [errorScrapingHorario, setErrorScrapingHorario] = React.useState<string | null>(null);
+    const [data, setData] = React.useState<any>(null);
 
 
     useEffect(() => {
@@ -222,7 +230,18 @@ export default function Home() {
 
 
 
-    if (isFileProcessing || isLoadingCarreras) {
+    if (isFileProcessing || isLoadingCarreras || isScrapingHorario) {
+        return <Box width='100%' height='100%' >
+            <Spinner
+                thickness='4px'
+                speed='0.65s'
+                emptyColor='gray.200'
+                color='blue.500'
+                size='xl'
+            />
+        </Box>;
+
+
         return <Center>
             <Spinner
                 thickness='4px'
@@ -451,6 +470,31 @@ export default function Home() {
                     <Button onClick={handleFileProcessing} isLoading={isFileProcessing} isDisabled={!isFileLoaded}>Procesar</Button>
                 </>
             }
+
+            <Box position='fixed' bottom='2rem' right='2rem'>
+                <Tooltip label='Intentar Obtener horario' aria-label='A tooltip'>
+                    <Button onClick={() => {
+                        setIsScrapingHorario(true)
+                        fetch('/api/scrape',
+                            {
+                                method: 'GET',
+                            }
+                        )
+                            .then(res => res.json())
+                            .then(res => {
+                                console.log(res);
+                                setData(res);
+                            }
+                            )
+                            .catch(err => console.log(err))
+                            .finally(() => setIsScrapingHorario(false))
+
+                    }} colorScheme='blue' size='lg' zIndex='1' >
+                        <DownloadIcon w={8} h={8} />
+                    </Button>
+                </Tooltip>
+            </Box>
+
 
             {
                 errorUploadingFile &&
