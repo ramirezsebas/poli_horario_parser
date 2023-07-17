@@ -23,11 +23,9 @@ import {
     Tr,
     Th,
     Td,
-    TableCaption,
     TableContainer,
     Select,
 } from '@chakra-ui/react'
-import { Carrera } from '@/interfaces/carrera'
 
 
 export default function Home() {
@@ -58,8 +56,7 @@ export default function Home() {
         }
 
         const filterCarrerasConMaterias: any = carreraConMaterias.filter((element: any) => element?.carrera === selectedCarrera);
-        console.log("filterCarrerasConMaterias");
-        console.log(filterCarrerasConMaterias);
+
         setFilteredMaterias(filterCarrerasConMaterias);
     }, [selectedCarrera])
 
@@ -137,13 +134,9 @@ export default function Home() {
 
         const excelFile = files![0]
 
-        console.log(excelFile);
-
         const formData = new FormData()
 
         formData.append('file', excelFile)
-
-        console.log(formData);
 
         fetch('/api/parse_file', {
             method: 'POST',
@@ -156,7 +149,6 @@ export default function Home() {
                     method: 'GET',
                 }).then(response => response.json())
                     .then(data => {
-                        console.log(data)
                         setCarreras(data)
                     })
                     .catch(error => {
@@ -167,7 +159,6 @@ export default function Home() {
                     .finally(() => {
                         setIsLoadingCarreras(false)
                     });
-                console.log(data)
                 setCarreraConMaterias(data);
                 setFilteredMaterias(data);
             })
