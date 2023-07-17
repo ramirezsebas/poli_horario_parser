@@ -27,6 +27,8 @@ import {
     Select,
 } from '@chakra-ui/react'
 
+const ITEMS_PER_PAGE = 10;
+
 
 export default function Home() {
 
@@ -44,6 +46,9 @@ export default function Home() {
     const [carreraConMaterias, setCarreraConMaterias] = React.useState<any>(null);
     const [filteredMaterias, setFilteredMaterias] = React.useState<any>(null);
 
+    const [currentPage, setCurrentPage] = React.useState<number>(1);
+    const [totalPages, setTotalPages] = React.useState<number>(0);
+
 
     useEffect(() => {
         if (!carreraConMaterias) {
@@ -58,7 +63,38 @@ export default function Home() {
         const filterCarrerasConMaterias: any = carreraConMaterias.filter((element: any) => element?.carrera === selectedCarrera);
 
         setFilteredMaterias(filterCarrerasConMaterias);
-    }, [selectedCarrera])
+    }, [selectedCarrera, carreraConMaterias]);
+
+    useEffect(() => {
+        if (filteredMaterias) {
+            const totalPages = Math.ceil(filteredMaterias[0].materias.length / ITEMS_PER_PAGE);
+            setTotalPages(totalPages);
+        }
+    }, [filteredMaterias]);
+
+    const getCurrentPageItems = () => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        return filteredMaterias[0].materias.slice(startIndex, endIndex);
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const goToNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const goToPage = (pageNumber: number) => {
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
+        }
+    };
 
 
     const closeErrorUploadingFile = () => {
@@ -308,7 +344,7 @@ export default function Home() {
                         </Thead>
                         <Tbody>
                             {
-                                filteredMaterias[0].materias.map((materia: any) => {
+                                getCurrentPageItems().map((materia: any) => {
                                     return <Tr key={materia.item}>
                                         <Td>{materia.item}</Td>
                                         <Td>{materia.dpto}</Td>
@@ -352,6 +388,43 @@ export default function Home() {
                     </Table>
                 </TableContainer>
             }
+
+            {filteredMaterias &&
+                carreras &&
+                selectedCarrera &&
+                selectedCarrera.length > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+                        <Button
+                            onClick={goToPreviousPage}
+                            disabled={currentPage === 1}
+                            colorScheme="blue"
+                            size="sm"
+                            style={{ marginRight: '1rem' }}
+                        >
+                            Anterior
+                        </Button>
+                        {[...Array(totalPages)].map((_, index) => (
+                            <Button
+                                key={index + 1}
+                                onClick={() => goToPage(index + 1)}
+                                colorScheme={currentPage === index + 1 ? 'blue' : 'gray'}
+                                size="sm"
+                                style={{ marginRight: '0.5rem' }}
+                            >
+                                {index + 1}
+                            </Button>
+                        ))}
+                        <Button
+                            onClick={goToNextPage}
+                            disabled={currentPage === totalPages}
+                            colorScheme="blue"
+                            size="sm"
+                            style={{ marginLeft: '1rem' }}
+                        >
+                            Siguiente
+                        </Button>
+                    </div>
+                )}
 
 
 
