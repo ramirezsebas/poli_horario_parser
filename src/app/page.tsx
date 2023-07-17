@@ -1,7 +1,33 @@
 "use client"
-import React from 'react'
+import React, { use, useEffect } from 'react'
 import styles from './page.module.css'
-import { Alert, AlertDescription, AlertIcon, AlertTitle, Button, Center, Container, Divider, FormLabel, Grid, GridItem, Heading, Input, Spinner } from '@chakra-ui/react'
+import {
+    Alert,
+    AlertIcon,
+    AlertDescription,
+    AlertTitle,
+    Button,
+    Center,
+    Container,
+    Divider,
+    FormLabel,
+    Grid,
+    GridItem,
+    Heading,
+    Input,
+    Spinner,
+    Table,
+    Thead,
+    Tbody,
+    Tfoot,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    TableContainer,
+    Select,
+} from '@chakra-ui/react'
+import { Carrera } from '@/interfaces/carrera'
 
 
 export default function Home() {
@@ -9,13 +35,28 @@ export default function Home() {
     const [files, setFiles] = React.useState<FileList | null>(null)
 
     const [isFileLoaded, setIsFileLoaded] = React.useState<boolean>(false)
-
     const [isFileProcessing, setIsFileProcessing] = React.useState<boolean>(false)
-
     const [errorUploadingFile, setErrorUploadingFile] = React.useState<string | null>(null)
 
+    const [carreras, setCarreras] = React.useState<any>([]);
+    const [isLoadingCarreras, setIsLoadingCarreras] = React.useState<boolean>(false);
+    const [errorLoadingCarreras, setErrorLoadingCarreras] = React.useState<string | null>(null);
+
+    const [carreraConMaterias, setCarreraConMaterias] = React.useState<any>(null);
+
+
+
+
     const closeErrorUploadingFile = () => {
-        setErrorUploadingFile(null)
+        setTimeout(() => {
+            setErrorUploadingFile(null);
+        }, 5000);
+    }
+
+    const closeErrorLoadingCarreras = () => {
+        setTimeout(() => {
+            setErrorLoadingCarreras(null);
+        }, 5000);
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,10 +134,28 @@ export default function Home() {
         })
             .then(response => response.json())
             .then(data => {
+                setIsLoadingCarreras(true)
+                fetch('/api/carreras', {
+                    method: 'GET',
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        setCarreras(data)
+                    })
+                    .catch(error => {
+                        console.error(error)
+                        setErrorLoadingCarreras('No se pudieron cargar las carreras')
+                        closeErrorLoadingCarreras();
+                    })
+                    .finally(() => {
+                        setIsLoadingCarreras(false)
+                    });
                 console.log(data)
+                setCarreraConMaterias(data)
             })
             .catch(error => {
                 console.error(error)
+                closeErrorUploadingFile();
             })
             .finally(() => {
                 setIsFileProcessing(false)
@@ -104,7 +163,7 @@ export default function Home() {
 
     }
 
-    if (isFileProcessing) {
+    if (isFileProcessing || isLoadingCarreras) {
         return <Center>
             <Spinner
                 thickness='4px'
@@ -121,21 +180,37 @@ export default function Home() {
         <main className={styles.main}>
             <Heading as='h1' size='2xl' noOfLines={1}>Bienvenido al Parser del Horario de la Poli</Heading>
 
+            {
 
-            <Grid templateColumns='repeat(2, 1fr)' gap={6}>
-                <GridItem w='100%' h='10' >
-                    <Heading as='h4' size='1xl' noOfLines={2}>Para empezar, arrastra o selecciona el archivo del horario de la Poli en la caja</Heading>
-                </GridItem>
-                <GridItem w='100%' h='10'  >
-                    <Container onDrop={handleDrop} onDragOver={handleDragOver} onChange={handleFileChange} >
-                        <Input type='file' />
-                        <FormLabel htmlFor='file'>Arrastra o selecciona el archivo del horario de la Poli</FormLabel>
-                    </Container>
-                </GridItem>
-            </Grid>
+                !carreraConMaterias && <Grid templateColumns='repeat(2, 1fr)' gap={6}>
+                    <GridItem w='100%' h='10' >
+                        <Heading as='h4' size='1xl' noOfLines={2}>Para empezar, arrastra o selecciona el archivo del horario de la Poli en la caja</Heading>
+                    </GridItem>
+                    <GridItem w='100%' h='10'  >
+                        <Container onDrop={handleDrop} onDragOver={handleDragOver} onChange={handleFileChange} >
+                            <Input type='file' />
+                            <FormLabel htmlFor='file'>Arrastra o selecciona el archivo del horario de la Poli</FormLabel>
+                        </Container>
+                    </GridItem>
+                </Grid>
+            }
 
             {
-                files &&
+                carreraConMaterias && carreras &&
+                <Select placeholder='Seleccionar la carrera'>
+                    {
+                        carreras.map((carrera: any) => {
+                            return <option key={carrera.id} value={carrera.id}>{carrera.nombre}</option>
+                        })
+                    }
+
+                </Select>
+            }
+
+
+
+            {
+                !carreraConMaterias && files &&
                 <Grid templateColumns='repeat(2, 1fr)' gap={6}>
                     <GridItem w='100%' h='10' >
                         <Heading as='h4' size='1xl' noOfLines={2}>Archivo cargado</Heading>
@@ -149,7 +224,7 @@ export default function Home() {
             }
 
             {
-                isFileLoaded &&
+                !carreraConMaterias && isFileLoaded &&
                 <>
                     <Divider />
                     <Button onClick={handleFileProcessing} isLoading={isFileProcessing} isDisabled={!isFileLoaded}>Procesar</Button>
@@ -158,7 +233,6 @@ export default function Home() {
 
             {
                 errorUploadingFile &&
-
                 <Alert status='error'>
                     <AlertIcon />
                     <AlertTitle>Hubo un error subiendo el archivo</AlertTitle>
@@ -166,9 +240,14 @@ export default function Home() {
                 </Alert>
             }
 
-
-
-
+            {
+                errorLoadingCarreras &&
+                <Alert status='error'>
+                    <AlertIcon />
+                    <AlertTitle>Hubo un error cargando las carreras</AlertTitle>
+                    <AlertDescription>{errorLoadingCarreras}</AlertDescription>
+                </Alert>
+            }
 
         </main>
 
