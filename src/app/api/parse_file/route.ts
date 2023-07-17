@@ -62,7 +62,7 @@ function extractSubjetsForEachCarrera(
   for (let sheetName of sheets) {
     const currentSheet = workbook.Sheets[sheetName];
 
-    let carrera: Carrera = {};
+    let carrera: Partial<Carrera> = {};
 
     let materias: Partial<Materia>[] = [];
 
@@ -95,7 +95,8 @@ function extractSubjetsForEachCarrera(
 
     carrera = {
       ...carrera,
-      [sheetName]: materias,
+      carrera: sheetName,
+      materias: materias,
     };
 
     carreras.push(carrera);

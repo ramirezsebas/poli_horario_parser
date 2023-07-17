@@ -1,3 +1,4 @@
 export interface Carrera {
-  [carrera: string]: Partial<Materia>[];
+  carrera: string;
+  materias: Partial<Materia>[];
 }
