@@ -14,26 +14,14 @@ import {
     Grid,
     GridItem,
     Heading,
-    Input,
     Spinner,
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
     Select,
-    Box,
-    Icon,
-    Tooltip,
 } from '@chakra-ui/react'
-import { DownloadIcon } from '@chakra-ui/icons';
 import { downloadExcel, downloadFileFromObject } from '@/utils/download_utils';
 import { isFileExcel } from '@/utils/file_utils';
 import MateriaTable from './components/materia_table';
 import DownloadButton from './components/download_button';
+import FileSector from './components/file_sector';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -219,11 +207,6 @@ export default function Home() {
 
     }
 
-
-
-
-
-
     return (
         <main className={styles.main}>
             <Heading style={{
@@ -279,18 +262,16 @@ export default function Home() {
 
             {
 
-                !carreraConMaterias && <Grid templateColumns='repeat(2, 1fr)' gap={6}>
-                    <GridItem w='100%' h='10' >
-                        <Heading as='h4' size='1xl' noOfLines={2}>Para empezar, arrastra o selecciona el archivo del horario de la Poli en la caja</Heading>
-                    </GridItem>
-                    <GridItem w='100%' h='10'  >
-                        <Container onDrop={handleDrop} onDragOver={handleDragOver} onChange={handleFileChange} >
-                            <Input type='file' disabled={isFileProcessing || isLoadingCarreras || isScrapingHorario} />
-                            <FormLabel htmlFor='file'>Arrastra o selecciona el archivo del horario de la Poli</FormLabel>
-                        </Container>
-                    </GridItem>
-                </Grid>
+                !carreraConMaterias &&
+                <FileSector
+                    isInputDisabled={isFileProcessing || isLoadingCarreras || isScrapingHorario}
+                    handleDragOver={handleDragOver}
+                    handleDrop={handleDrop}
+                    handleFileChange={handleFileChange}
+
+                />
             }
+
 
             {
                 carreraConMaterias && carreras &&
@@ -353,10 +334,6 @@ export default function Home() {
                         </Button>
                     </div>
                 )}
-
-
-
-
 
             {
                 !carreraConMaterias && files &&
