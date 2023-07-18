@@ -32,6 +32,7 @@ import {
 import { DownloadIcon } from '@chakra-ui/icons';
 import { downloadExcel, downloadFileFromObject } from '@/utils/download_utils';
 import { isFileExcel } from '@/utils/file_utils';
+import MateriaTable from './components/materia_table';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -216,19 +217,6 @@ export default function Home() {
 
 
 
-    if (isFileProcessing || isLoadingCarreras || isScrapingHorario) {
-        return <Box width='100%' height='100%' >
-            <Spinner
-                thickness='4px'
-                speed='0.65s'
-                emptyColor='gray.200'
-                color='blue.500'
-                size='xl'
-            />
-        </Box>;
-
-
-    }
 
 
     return (
@@ -239,6 +227,20 @@ export default function Home() {
             }} as='h1' size='2xl' noOfLines={1}>Bienvenido al Parser del Horario de la Poli</Heading>
 
             {
+                isFileProcessing || isLoadingCarreras || isScrapingHorario &&
+                <Center width='100%' height='100%' >
+                    <Spinner
+                        thickness='4px'
+                        speed='0.65s'
+                        emptyColor='gray.200'
+                        color='blue.500'
+                        size='xl'
+                    />
+                </Center>
+
+            }
+
+            {
                 carreraConMaterias &&
                 <Button
                     style={{
@@ -247,7 +249,7 @@ export default function Home() {
                     onClick={() => downloadFileFromObject(carreraConMaterias, 'horario_poli')}
                     colorScheme='blue'
                     size='lg'
-                    disabled={!isFileLoaded}
+                    disabled={!isFileLoaded || isFileProcessing || isLoadingCarreras || isScrapingHorario}
                 >
                     Descargar JSON de materias con todas las carreras
                 </Button>
@@ -264,7 +266,7 @@ export default function Home() {
                     onClick={() => downloadFileFromObject(filteredMaterias, 'horario_poli')}
                     colorScheme='blue'
                     size='lg'
-                    disabled={!isFileLoaded}
+                    disabled={!isFileLoaded || isFileProcessing || isLoadingCarreras || isScrapingHorario}
                 >
                     Descargar JSON de materias con la carrera seleccionado ({selectedCarrera})
                 </Button>
@@ -278,7 +280,7 @@ export default function Home() {
                     </GridItem>
                     <GridItem w='100%' h='10'  >
                         <Container onDrop={handleDrop} onDragOver={handleDragOver} onChange={handleFileChange} >
-                            <Input type='file' />
+                            <Input type='file' disabled={isFileProcessing || isLoadingCarreras || isScrapingHorario} />
                             <FormLabel htmlFor='file'>Arrastra o selecciona el archivo del horario de la Poli</FormLabel>
                         </Container>
                     </GridItem>
@@ -303,86 +305,7 @@ export default function Home() {
                 selectedCarrera &&
                 selectedCarrera.length > 0 &&
 
-                <TableContainer>
-                    <Table size='sm'>
-                        <Thead>
-                            <Tr>
-                                <Th>Ítem</Th>
-                                <Th>Departamento</Th>
-                                <Th>Asignatura</Th>
-                                <Th>Nivel</Th>
-                                <Th>Semestre/Grupo</Th>
-                                <Th>Sigla de Carrera</Th>
-                                <Th>Énfasis</Th>
-                                <Th>Plan</Th>
-                                <Th>Turno</Th>
-                                <Th>Sección</Th>
-                                <Th>Plataforma de Aula Virtual</Th>
-                                <Th>Título</Th>
-                                <Th>Apellido</Th>
-                                <Th>Nombre</Th>
-                                <Th>Correo Institucional</Th>
-                                <Th>Día Parcial 1</Th>
-                                <Th>Hora Parcial 1</Th>
-                                <Th>Día Parcial 2</Th>
-                                <Th>Hora Parcial 2</Th>
-                                <Th>Día Final 1</Th>
-                                <Th>Hora Final 1</Th>
-                                <Th>Día Final 2</Th>
-                                <Th>Hora Final 2</Th>
-                                <Th>Lunes</Th>
-                                <Th>Martes</Th>
-                                <Th>Miércoles</Th>
-                                <Th>Viernes</Th>
-                                <Th>Sábado</Th>
-                                <Th>Fechas de Clases de Sábados (Turno Noche)</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {
-                                getCurrentPageItems().map((materia: any) => {
-                                    return <Tr key={materia.item}>
-                                        <Td>{materia.item}</Td>
-                                        <Td>{materia.dpto}</Td>
-                                        <Td>{materia.asignatura}</Td>
-                                        <Td>{materia.nivel}</Td>
-                                        <Td>{materia.sem_grupo}</Td>
-                                        <Td>{materia.sigla_carrera}</Td>
-                                        <Td>{materia.enfasis}</Td>
-                                        <Td>{materia.plan}</Td>
-                                        <Td>{materia.turno}</Td>
-                                        <Td>{materia.seccion}</Td>
-                                        <Td>{materia.plataforma_de_aula_virtual}</Td>
-                                        <Td>{materia.tit}</Td>
-                                        <Td>{materia.apellido}</Td>
-                                        <Td>{materia.nombre}</Td>
-                                        <Td>{materia.correo_institucional}</Td>
-                                        <Td>{materia.parcial_1_dia}</Td>
-                                        <Td>{materia.parcial_1_hora}</Td>
-                                        <Td>{materia.parcial_2_dia}</Td>
-                                        <Td>{materia.parcial_2_hora}</Td>
-                                        <Td>{materia.final_1_dia}</Td>
-                                        <Td>{materia.final_1_hora}</Td>
-                                        <Td>{materia.final_2_dia}</Td>
-                                        <Td>{materia.final_2_hora}</Td>
-                                        <Td>{materia.lunes}</Td>
-                                        <Td>{materia.martes}</Td>
-                                        <Td>{materia.miercoles}</Td>
-                                        <Td>{materia.viernes}</Td>
-                                        <Td>{materia.sabado}</Td>
-                                        <Td>{materia["fechas_de_clases_de_sabados_(turno_noche)"]}</Td>
-                                    </Tr>
-                                }
-                                )
-                            }
-                        </Tbody>
-                        <Tfoot>
-                            <Tr>
-                                <Th>Item</Th>
-                            </Tr>
-                        </Tfoot>
-                    </Table>
-                </TableContainer>
+                <MateriaTable getPageItems={() => getCurrentPageItems()} />
             }
 
             {filteredMaterias &&
@@ -402,6 +325,7 @@ export default function Home() {
                         {[...Array(totalPages)].map((_, index) => (
                             <Button
                                 key={index + 1}
+                                disabled={isFileProcessing || isLoadingCarreras || isScrapingHorario}
                                 onClick={() => goToPage(index + 1)}
                                 colorScheme={currentPage === index + 1 ? 'blue' : 'gray'}
                                 size="sm"
@@ -412,7 +336,7 @@ export default function Home() {
                         ))}
                         <Button
                             onClick={goToNextPage}
-                            disabled={currentPage === totalPages}
+                            disabled={currentPage === totalPages || isFileProcessing || isLoadingCarreras || isScrapingHorario}
                             colorScheme="blue"
                             size="sm"
                             style={{ marginLeft: '1rem' }}
@@ -444,34 +368,39 @@ export default function Home() {
                 !carreraConMaterias && isFileLoaded &&
                 <>
                     <Divider />
-                    <Button onClick={handleFileProcessing} isLoading={isFileProcessing} isDisabled={!isFileLoaded}>Procesar</Button>
+                    <Button onClick={handleFileProcessing} isLoading={isFileProcessing} isDisabled={!isFileLoaded || isFileProcessing || isLoadingCarreras || isScrapingHorario}>Procesar</Button>
                 </>
             }
 
             <Box position='fixed' bottom='2rem' right='2rem'>
                 <Tooltip label='Descargar horario' aria-label='A tooltip'>
-                    <Button onClick={() => {
-                        setIsScrapingHorario(true)
-                        fetch('/api/latest_horario',
-                            {
-                                method: 'GET',
+                    <Button
+                        isDisabled={isFileProcessing || isLoadingCarreras || isScrapingHorario}
+                        onClick={() => {
+                            if (isFileProcessing || isLoadingCarreras || isScrapingHorario) {
+                                return;
                             }
-                        )
-                            .then(res => res.json())
-                            .then(res => {
-                                const linkFile = res.link;
-
-                                downloadExcel(linkFile);
-                            }
+                            setIsScrapingHorario(true)
+                            fetch('/api/latest_horario',
+                                {
+                                    method: 'GET',
+                                }
                             )
-                            .catch(err => {
-                                setErrorScrapingHorario(err.message);
+                                .then(res => res.json())
+                                .then(res => {
+                                    const linkFile = res.link;
+
+                                    downloadExcel(linkFile);
+                                }
+                                )
+                                .catch(err => {
+                                    setErrorScrapingHorario(err.message);
 
 
-                            })
-                            .finally(() => setIsScrapingHorario(false))
+                                })
+                                .finally(() => setIsScrapingHorario(false))
 
-                    }} colorScheme='blue' size='lg' zIndex='1' >
+                        }} colorScheme='blue' size='lg' zIndex='1' >
                         <DownloadIcon w={8} h={8} />
                     </Button>
                 </Tooltip>
