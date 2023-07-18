@@ -22,37 +22,7 @@ export default function MateriaTable(
         <TableContainer>
             <Table size="sm">
                 <Thead>
-                    <Tr>
-                        <Th>Ítem</Th>
-                        <Th>Departamento</Th>
-                        <Th>Asignatura</Th>
-                        <Th>Nivel</Th>
-                        <Th>Semestre/Grupo</Th>
-                        <Th>Sigla de Carrera</Th>
-                        <Th>Énfasis</Th>
-                        <Th>Plan</Th>
-                        <Th>Turno</Th>
-                        <Th>Sección</Th>
-                        <Th>Plataforma de Aula Virtual</Th>
-                        <Th>Título</Th>
-                        <Th>Apellido</Th>
-                        <Th>Nombre</Th>
-                        <Th>Correo Institucional</Th>
-                        <Th>Día Parcial 1</Th>
-                        <Th>Hora Parcial 1</Th>
-                        <Th>Día Parcial 2</Th>
-                        <Th>Hora Parcial 2</Th>
-                        <Th>Día Final 1</Th>
-                        <Th>Hora Final 1</Th>
-                        <Th>Día Final 2</Th>
-                        <Th>Hora Final 2</Th>
-                        <Th>Lunes</Th>
-                        <Th>Martes</Th>
-                        <Th>Miércoles</Th>
-                        <Th>Viernes</Th>
-                        <Th>Sábado</Th>
-                        <Th>Fechas de Clases de Sábados (Turno Noche)</Th>
-                    </Tr>
+                    <MateriaTableHeader />
                 </Thead>
                 <Tbody>
                     {getPageItems().map((materia: any) => {
@@ -92,39 +62,48 @@ export default function MateriaTable(
                     })}
                 </Tbody>
                 <Tfoot>
-                    <Tr>
-                        <Th>Ítem</Th>
-                        <Th>Departamento</Th>
-                        <Th>Asignatura</Th>
-                        <Th>Nivel</Th>
-                        <Th>Semestre/Grupo</Th>
-                        <Th>Sigla de Carrera</Th>
-                        <Th>Énfasis</Th>
-                        <Th>Plan</Th>
-                        <Th>Turno</Th>
-                        <Th>Sección</Th>
-                        <Th>Plataforma de Aula Virtual</Th>
-                        <Th>Título</Th>
-                        <Th>Apellido</Th>
-                        <Th>Nombre</Th>
-                        <Th>Correo Institucional</Th>
-                        <Th>Día Parcial 1</Th>
-                        <Th>Hora Parcial 1</Th>
-                        <Th>Día Parcial 2</Th>
-                        <Th>Hora Parcial 2</Th>
-                        <Th>Día Final 1</Th>
-                        <Th>Hora Final 1</Th>
-                        <Th>Día Final 2</Th>
-                        <Th>Hora Final 2</Th>
-                        <Th>Lunes</Th>
-                        <Th>Martes</Th>
-                        <Th>Miércoles</Th>
-                        <Th>Viernes</Th>
-                        <Th>Sábado</Th>
-                        <Th>Fechas de Clases de Sábados (Turno Noche)</Th>
-                    </Tr>
+                    <MateriaTableHeader />
                 </Tfoot>
             </Table>
         </TableContainer>
     );
 }
+
+
+
+function MateriaTableHeader() {
+    return (
+        <Tr>
+            <Th>Ítem</Th>
+            <Th>Departamento</Th>
+            <Th>Asignatura</Th>
+            <Th>Nivel</Th>
+            <Th>Semestre/Grupo</Th>
+            <Th>Sigla de Carrera</Th>
+            <Th>Énfasis</Th>
+            <Th>Plan</Th>
+            <Th>Turno</Th>
+            <Th>Sección</Th>
+            <Th>Plataforma de Aula Virtual</Th>
+            <Th>Título</Th>
+            <Th>Apellido</Th>
+            <Th>Nombre</Th>
+            <Th>Correo Institucional</Th>
+            <Th>Día Parcial 1</Th>
+            <Th>Hora Parcial 1</Th>
+            <Th>Día Parcial 2</Th>
+            <Th>Hora Parcial 2</Th>
+            <Th>Día Final 1</Th>
+            <Th>Hora Final 1</Th>
+            <Th>Día Final 2</Th>
+            <Th>Hora Final 2</Th>
+            <Th>Lunes</Th>
+            <Th>Martes</Th>
+            <Th>Miércoles</Th>
+            <Th>Viernes</Th>
+            <Th>Sábado</Th>
+            <Th>Fechas de Clases de Sábados (Turno Noche)</Th>
+        </Tr>
+    )
+}
+
