@@ -23,7 +23,7 @@ export function extractSubjetsForEachCarrera(
     let currentCellIndex = `A${currentRowIndex}`;
 
     // Recorremos cada fila de la hojas
-    while (currentSheet[currentCellIndex] != null) {
+    while (isValidCell(currentSheet, currentCellIndex, currentRowIndex)) {
       let materia: Partial<Materia> = {};
       // Recorremos cada columna de la fila
       // Obs: Como ya obtuvimos los encabezados, sabemos hasta donde debe ir que seria headerExcel.length
@@ -55,7 +55,27 @@ export function extractSubjetsForEachCarrera(
   return carreras;
 }
 
-export function updateColumn(i: number, currentRowIndex: number) {
-  // Reemplzamos el numero(fila) por el numero de fila actual
-  return headerExcel[i].replace(/[0-9]+/g, currentRowIndex.toString());
+function isValidCell(
+  currentSheet: xlsx.WorkSheet,
+  currentCellIndex: string,
+  currentRowIndex: number
+) {
+  return (
+    currentSheet[currentCellIndex] != null ||
+    currentSheet[
+      currentCellIndex.replace(/[0-9]+/g, (currentRowIndex + 1).toString())
+    ] != null
+  );
+}
+
+export function updateColumn(
+  i: number,
+  currentRowIndex: number,
+  increment = 0
+) {
+  // Reemplzamos el numero(fila) por el numero de fila actual + un incremento
+  return headerExcel[i].replace(
+    /[0-9]+/g,
+    (currentRowIndex + increment).toString()
+  );
 }
