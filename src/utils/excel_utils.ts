@@ -28,7 +28,7 @@ export function extractSubjetsForEachCarrera(
       // Recorremos cada columna de la fila
       // Obs: Como ya obtuvimos los encabezados, sabemos hasta donde debe ir que seria headerExcel.length
       for (let i = 0; i < headerExcel.length; i++) {
-        const currentIndex = updateRow(i, currentRowIndex);
+        const currentIndex = updateColumn(i, currentRowIndex);
         const currentCell = currentSheet[currentIndex];
         const currentCellValue = currentCell?.v;
         const currentHeader = headersWithExams[i];
@@ -55,8 +55,7 @@ export function extractSubjetsForEachCarrera(
   return carreras;
 }
 
-export function updateRow(i: number, currentRowIndex: number) {
-  // Reemplzamos el numero(fila) e incrementamos el indice actual del encabezado.
-  // Como empieza en 12, ira incrementando 12 + 1, 12 + 2, 12 + 3, etc
-  return headerExcel[i].replace(/[0-9]+/g, (currentRowIndex + i).toString());
+export function updateColumn(i: number, currentRowIndex: number) {
+  // Reemplzamos el numero(fila) por el numero de fila actual
+  return headerExcel[i].replace(/[0-9]+/g, currentRowIndex.toString());
 }
