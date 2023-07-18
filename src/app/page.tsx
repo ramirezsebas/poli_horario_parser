@@ -33,6 +33,7 @@ import { DownloadIcon } from '@chakra-ui/icons';
 import { downloadExcel, downloadFileFromObject } from '@/utils/download_utils';
 import { isFileExcel } from '@/utils/file_utils';
 import MateriaTable from './components/materia_table';
+import DownloadButton from './components/download_button';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -379,40 +380,35 @@ export default function Home() {
                 </>
             }
 
-            <Box position='fixed' bottom='2rem' right='2rem'>
-                <Tooltip label='Descargar horario' aria-label='A tooltip'>
-                    <Button
-                        isDisabled={isFileProcessing || isLoadingCarreras || isScrapingHorario}
-                        onClick={() => {
-                            if (isFileProcessing || isLoadingCarreras || isScrapingHorario) {
-                                return;
+            <DownloadButton
+                isDisabled={isFileProcessing || isLoadingCarreras || isScrapingHorario}
+                onClick={
+                    () => {
+                        if (isFileProcessing || isLoadingCarreras || isScrapingHorario) {
+                            return;
+                        }
+                        setIsScrapingHorario(true)
+                        fetch('/api/latest_horario',
+                            {
+                                method: 'GET',
                             }
-                            setIsScrapingHorario(true)
-                            fetch('/api/latest_horario',
-                                {
-                                    method: 'GET',
-                                }
+                        )
+                            .then(res => res.json())
+                            .then(res => {
+                                const linkFile = res.link;
+
+                                downloadExcel(linkFile);
+                            }
                             )
-                                .then(res => res.json())
-                                .then(res => {
-                                    const linkFile = res.link;
-
-                                    downloadExcel(linkFile);
-                                }
-                                )
-                                .catch(err => {
-                                    setErrorScrapingHorario(err.message);
+                            .catch(err => {
+                                setErrorScrapingHorario(err.message);
 
 
-                                })
-                                .finally(() => setIsScrapingHorario(false))
-
-                        }} colorScheme='blue' size='lg' zIndex='1' >
-                        <DownloadIcon w={8} h={8} />
-                    </Button>
-                </Tooltip>
-            </Box>
-
+                            })
+                            .finally(() => setIsScrapingHorario(false))
+                    }
+                }
+            />
 
             {
                 errorUploadingFile &&
