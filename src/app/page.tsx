@@ -30,6 +30,8 @@ import {
     Tooltip,
 } from '@chakra-ui/react'
 import { DownloadIcon } from '@chakra-ui/icons';
+import { downloadExcel, downloadFileFromObject } from '@/utils/download_utils';
+import { isFileExcel } from '@/utils/file_utils';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -55,7 +57,6 @@ export default function Home() {
 
     const [isScrapingHorario, setIsScrapingHorario] = React.useState<boolean>(false);
     const [errorScrapingHorario, setErrorScrapingHorario] = React.useState<string | null>(null);
-    const [data, setData] = React.useState<any>(null);
 
 
     useEffect(() => {
@@ -165,10 +166,6 @@ export default function Home() {
 
     }
 
-    const isFileExcel = (file: File) => {
-        return file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    }
-
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
     }
@@ -216,17 +213,6 @@ export default function Home() {
 
     }
 
-    const downloadFileFromObject = (object: any, fileName: string) => {
-        const json = JSON.stringify(object)
-        const blob = new Blob([json], { type: 'application/json' })
-        const href = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = href;
-        link.download = fileName + ".json";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
 
 
 
@@ -473,14 +459,16 @@ export default function Home() {
                         )
                             .then(res => res.json())
                             .then(res => {
-                                console.log(res);
-                                setData(res);
                                 const linkFile = res.link;
 
                                 downloadExcel(linkFile);
                             }
                             )
-                            .catch(err => console.log(err))
+                            .catch(err => {
+                                setErrorScrapingHorario(err.message);
+
+
+                            })
                             .finally(() => setIsScrapingHorario(false))
 
                     }} colorScheme='blue' size='lg' zIndex='1' >
@@ -508,16 +496,18 @@ export default function Home() {
                 </Alert>
             }
 
+            {
+                errorScrapingHorario &&
+                <Alert status='error'>
+                    <AlertIcon />
+                    <AlertTitle>Hubo un error descargando el horario</AlertTitle>
+                    <AlertDescription>{errorScrapingHorario}</AlertDescription>
+                </Alert>
+            }
+
         </main>
 
     )
 }
-function downloadExcel(linkFile: any) {
-    const link = document.createElement('a');
-    link.href = linkFile;
-    link.download = 'horario.xlsx';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+
 
