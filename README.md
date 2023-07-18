@@ -1,6 +1,6 @@
 # Horario Parser de Politecnica
 
-Este proyecto fue creado con el objetivo de facilitar el acceso a los datos del horario de la facultad Politécnica de la Universidad Nacional de Asunción.
+Este proyecto fue creado con el objetivo de facilitar el acceso a los datos del horario de la facultad Politécnica de la Universidad Nacional de Asunción. Una forma sencilla de obtener el horario y usarla en otras aplicaciones.
 
 ## El mismo fue desarrollado utilizando las siguientes tecnologías
 
