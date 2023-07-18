@@ -82,6 +82,10 @@ export default function Home() {
         }
     }, [filteredMaterias]);
 
+    const reinitializePageIndex: any = () => {
+        setCurrentPage(1);
+    };
+
     const getCurrentPageItems = () => {
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
         const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -289,7 +293,10 @@ export default function Home() {
 
             {
                 carreraConMaterias && carreras &&
-                <Select placeholder='Seleccionar la carrera' value={selectedCarrera} onChange={(e) => setSelectedCarrera(e.target.value)}>
+                <Select placeholder='Seleccionar la carrera' value={selectedCarrera} onChange={(e) => {
+                    reinitializePageIndex();
+                    return setSelectedCarrera(e.target.value);
+                }}>
                     {
                         carreras.map((carrera: any) => {
                             return <option key={carrera.id} value={carrera.nombre}>{carrera.nombre}</option>
