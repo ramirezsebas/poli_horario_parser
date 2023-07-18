@@ -242,15 +242,6 @@ export default function Home() {
         </Box>;
 
 
-        return <Center>
-            <Spinner
-                thickness='4px'
-                speed='0.65s'
-                emptyColor='gray.200'
-                color='blue.500'
-                size='xl'
-            />
-        </Center>;
     }
 
 
@@ -472,7 +463,7 @@ export default function Home() {
             }
 
             <Box position='fixed' bottom='2rem' right='2rem'>
-                <Tooltip label='Intentar Obtener horario' aria-label='A tooltip'>
+                <Tooltip label='Descargar horario' aria-label='A tooltip'>
                     <Button onClick={() => {
                         setIsScrapingHorario(true)
                         fetch('/api/scrape',
@@ -484,6 +475,9 @@ export default function Home() {
                             .then(res => {
                                 console.log(res);
                                 setData(res);
+                                const linkFile = res.link;
+
+                                downloadExcel(linkFile);
                             }
                             )
                             .catch(err => console.log(err))
@@ -518,3 +512,12 @@ export default function Home() {
 
     )
 }
+function downloadExcel(linkFile: any) {
+    const link = document.createElement('a');
+    link.href = linkFile;
+    link.download = 'horario.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
