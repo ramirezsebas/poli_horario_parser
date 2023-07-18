@@ -2,6 +2,12 @@
 
 Este proyecto fue creado con el objetivo de facilitar el acceso a los datos del horario de la facultad Politécnica de la Universidad Nacional de Asunción. Una forma sencilla de obtener el horario y usarla en otras aplicaciones.
 
+## TODO
+
+[] Mejorar el manejo de error
+[] Responsive
+[] Mejorar el diseño
+
 ## El mismo fue desarrollado utilizando las siguientes tecnologías
 
 - Next.js
