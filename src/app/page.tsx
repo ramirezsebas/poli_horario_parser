@@ -179,7 +179,7 @@ export default function Home() {
 
         formData.append('file', excelFile)
 
-        fetch('/api/parse_file', {
+        fetch('/api/horario', {
             method: 'POST',
             body: formData
         })
@@ -452,7 +452,7 @@ export default function Home() {
                 <Tooltip label='Descargar horario' aria-label='A tooltip'>
                     <Button onClick={() => {
                         setIsScrapingHorario(true)
-                        fetch('/api/scrape',
+                        fetch('/api/latest_horario',
                             {
                                 method: 'GET',
                             }
