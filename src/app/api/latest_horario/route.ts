@@ -9,18 +9,32 @@ export async function GET(request: Request) {
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.error();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al iniciar el navegador",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
   }
 
   let page: Page;
 
   try {
     page = await browser.newPage();
-  } catch (error) {
-    console.error(error);
-    return NextResponse.error();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al abrir una nueva página",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
   }
 
   try {
@@ -30,9 +44,16 @@ export async function GET(request: Request) {
         waitUntil: "domcontentloaded",
       }
     );
-  } catch (error) {
-    console.error(error);
-    return NextResponse.error();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al abrir la página",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
   }
 
   let h3;
@@ -60,20 +81,39 @@ export async function GET(request: Request) {
     }, bodyHandle);
 
     await bodyHandle?.dispose();
-  } catch (error) {
-    console.error(error);
-    return NextResponse.error();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al obtener el link o titulo",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
   }
 
   try {
     await browser.close();
-  } catch (error) {
-    console.error(error);
-    return NextResponse.error();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al cerrar el navegador",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
   }
 
-  return NextResponse.json({
-    title: h3,
-    link,
-  });
+  return NextResponse.json(
+    {
+      title: h3,
+      link,
+    },
+    {
+      status: 200,
+    }
+  );
 }
