@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "710fe284-5703-4ce5-87a9-e1bb6a0b23c1",
+		"name": "Poli Parser",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16243014",
+		"_collection_link": "https://lively-star-27885.postman.co/workspace/IIN~ea0bb625-ba5b-48de-b159-d07b353953e7/collection/16243014-710fe284-5703-4ce5-87a9-e1bb6a0b23c1?action=share&creator=16243014&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Local",
+			"item": [
+				{
+					"name": "Traer el ultimo horario de la pagina de la poli",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/latest_horario",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"latest_horario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parsear horario de la poli",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [
+										"/C:/Users/ramir/Downloads/Planificacion-de-clases-y-examenes-Primer-Periodo-2023-version-web-22062023.xlsx",
+										"/C:/Users/ramir/Downloads/google-services_dev.json"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{local}}/api/horario",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"horario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Traer todas las carreras por siglas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/api/carreras",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"api",
+								"carreras"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Prod",
+			"item": [
+				{
+					"name": "Traer el ultimo horario de la pagina de la poli",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prod}}/api/latest_horario",
+							"host": [
+								"{{prod}}"
+							],
+							"path": [
+								"api",
+								"latest_horario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parsear horario de la poli",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/ramir/Downloads/Planificacion-de-clases-y-examenes-Primer-Periodo-2023-version-web-22062023.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{prod}}/api/horario",
+							"host": [
+								"{{prod}}"
+							],
+							"path": [
+								"api",
+								"horario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Traer todas las carreras por siglas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{prod}}/api/carreras",
+							"host": [
+								"{{prod}}"
+							],
+							"path": [
+								"api",
+								"carreras"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
