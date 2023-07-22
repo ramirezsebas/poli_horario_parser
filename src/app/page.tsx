@@ -180,17 +180,28 @@ export default function Home() {
             method: 'POST',
             body: formData
         })
-            .then(response => response.json())
+            .then(response => {
+                if (response.status !== 200) {
+                    closeErrorUploadingFile();
+                    return;
+                }
+                return response.json();
+            })
             .then(data => {
                 setIsLoadingCarreras(true)
                 fetch('/api/carreras', {
                     method: 'GET',
-                }).then(response => response.json())
+                }).then(response => {
+                    if (response.status !== 200) {
+                        closeErrorLoadingCarreras();
+                        return;
+                    }
+                    return response.json();
+                })
                     .then(data => {
                         setCarreras(data)
                     })
                     .catch(error => {
-                        console.error(error)
                         setErrorLoadingCarreras('No se pudieron cargar las carreras')
                         closeErrorLoadingCarreras();
                     })
@@ -373,7 +384,13 @@ export default function Home() {
                                 method: 'GET',
                             }
                         )
-                            .then(res => res.json())
+                            .then(res => {
+                                if (res.status !== 200) {
+                                    setErrorScrapingHorario('Hubo un error descargando el horario');
+                                    return;
+                                }
+                                return res.json();
+                            })
                             .then(res => {
                                 const linkFile = res.link;
 
