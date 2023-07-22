@@ -22,7 +22,32 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!formData.has("file")) {
+    return NextResponse.json(
+      {
+        error_client:
+          "No se ha enviado ningún archivo (formdata debe tener como clave 'file')",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (formData.getAll("file").length > 1) {
+    return NextResponse.json(
+      {
+        error_client: "Solo se puede subir un archivo",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
   const file: File | null = formData.get("file") as unknown as File;
+
+  console.log(file);
 
   if (!file) {
     return NextResponse.json(
