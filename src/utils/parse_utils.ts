@@ -80,20 +80,6 @@ export function isLastLetter(currentCellIndex: string) {
   return currentCellIndex.match("Z") != null;
 }
 
-export async function handleFile(
-  uploadPath: string,
-  filePath: string,
-  buffer: Buffer
-) {
-  const files = await readdir(uploadPath);
-
-  files.forEach(async (file) => {
-    await unlink(path.join(uploadPath, file));
-  });
-
-  await writeFile(filePath, buffer);
-}
-
 export function getHeaders(workbook: xlsx.WorkBook) {
   const sheet = workbook.Sheets[sheets[0]];
 

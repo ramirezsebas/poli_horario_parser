@@ -1,9 +1,11 @@
 import { extractSubjetsForEachCarrera } from "@/utils/excel_utils";
 import { isFileExcel } from "@/utils/file_utils";
-import { getHeaders, handleFile, headerExcel } from "@/utils/parse_utils";
+import { getHeaders } from "@/utils/parse_utils";
 import { NextResponse } from "next/server";
 import path from "path";
 import * as xlsx from "xlsx";
+import { readdir, unlink, writeFile } from "fs/promises";
+import { existsSync, fstat } from "fs";
 
 export async function POST(request: Request) {
   let formData;
@@ -111,7 +113,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let uploadPath;
+  let uploadPath: string;
 
   try {
     uploadPath = path.join(process.cwd(), "public", "uploads");
@@ -143,14 +145,46 @@ export async function POST(request: Request) {
     );
   }
 
-  // Eliminamos los archivos que estén en la carpeta uploads
-  // y guardamos el archivo que se subió
+  let filesFound;
+
   try {
-    await handleFile(uploadPath, filePath, buffer);
+    filesFound = await readdir(uploadPath);
   } catch (error: any) {
     return NextResponse.json(
       {
-        error_client: "Error al eliminar y guardar el archivo excel",
+        error_client: "Error al leer los archivos de la carpeta uploads",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  try {
+    filesFound.forEach(async (file) => {
+      if (existsSync(path.join(uploadPath, file))) {
+        await unlink(path.join(uploadPath, file));
+      }
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al eliminar los archivos de la carpeta uploads",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  try {
+    await writeFile(filePath, buffer);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al guardar el archivo excel",
         error: error.toString(),
       },
       {
