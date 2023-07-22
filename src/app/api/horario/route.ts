@@ -6,6 +6,7 @@ import path from "path";
 import * as xlsx from "xlsx";
 import { readdir, unlink, writeFile } from "fs/promises";
 import { existsSync, fstat } from "fs";
+import { ErrorCode } from "@/utils/constants";
 
 export async function POST(request: Request) {
   let formData;
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al obtener el archivo excel del formdata",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_FORM_DATA,
       },
       {
         status: 500,
@@ -29,6 +31,7 @@ export async function POST(request: Request) {
       {
         error_client:
           "No se ha enviado ningún archivo (formdata debe tener como clave 'file')",
+        error_code: ErrorCode.ERROR_MISSING_FILE_KEY,
       },
       {
         status: 400,
@@ -40,6 +43,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error_client: "Solo se puede subir un archivo",
+        error_code: ErrorCode.ERROR_MULTIPLE_FILES,
       },
       {
         status: 400,
@@ -53,6 +57,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error_client: "No se ha enviado ningún archivo",
+        error_code: ErrorCode.ERROR_MISSING_FILE,
       },
       {
         status: 400,
@@ -64,6 +69,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error_client: "Solo se puede subir un archivo",
+        error_code: ErrorCode.ERROR_MULTIPLE_FILES,
       },
       {
         status: 400,
@@ -75,6 +81,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error_client: "El archivo no es un excel",
+        error_code: ErrorCode.ERROR_MISSING_EXCEL_FILE,
       },
       {
         status: 400,
@@ -91,6 +98,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al convertir el archivo excel a bytes",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_CONVERT_TO_BYTES,
       },
       {
         status: 500,
@@ -106,6 +114,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al convertir el archivo excel a buffer",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_CONVERT_TO_BUFFER,
       },
       {
         status: 500,
@@ -122,6 +131,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al obtener la ruta de la carpeta uploads",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_UPLOAD_PATH,
       },
       {
         status: 500,
@@ -138,6 +148,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al obtener la ruta del archivo excel",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_FILE_PATH,
       },
       {
         status: 500,
@@ -154,6 +165,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al leer los archivos de la carpeta uploads",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_READ_UPLOADS_FOLDER,
       },
       {
         status: 500,
@@ -172,6 +184,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al eliminar los archivos de la carpeta uploads",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_DELETE_FILES,
       },
       {
         status: 500,
@@ -186,6 +199,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al guardar el archivo excel",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_READ_FILE,
       },
       {
         status: 500,
@@ -201,6 +215,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al leer el archivo excel",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_READ_EXCEL_FILE,
       },
       {
         status: 500,
@@ -217,6 +232,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al obtener los encabezados de la tabla",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_GET_HEADERS,
       },
       {
         status: 500,
@@ -234,6 +250,7 @@ export async function POST(request: Request) {
       {
         error_client: "Error al extraer las materias de cada carrera",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_EXTRACT_SUBJECTS,
       },
       {
         status: 500,
