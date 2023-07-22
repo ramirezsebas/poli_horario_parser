@@ -6,49 +6,185 @@ import path from "path";
 import * as xlsx from "xlsx";
 
 export async function POST(request: Request) {
+  let formData;
+
   try {
-    const formData = await request.formData();
-
-    const file: File | null = formData.get("file") as unknown as File;
-
-    if (!file) {
-      return NextResponse.error();
-    }
-
-    if (file.length > 1) {
-      return NextResponse.error();
-    }
-
-    if (!isFileExcel(file)) {
-      return NextResponse.error();
-    }
-
-    const bytes = await file.arrayBuffer();
-
-    const buffer = Buffer.from(bytes);
-
-    const uploadPath = path.join(process.cwd(), "public", "uploads");
-
-    const filePath = path.join(uploadPath, file.name);
-
-    // Eliminamos los archivos que estén en la carpeta uploads
-    // y guardamos el archivo que se subió
-    await handleFile(uploadPath, filePath, buffer);
-
-    const workbook = xlsx.readFile(filePath);
-
-    // Obtenemos los encabezados de la tabla
-    const headersWithExams = getHeaders(workbook);
-
-    // Obtenemos las materias de cada carrera
-    const carreras: any = extractSubjetsForEachCarrera(
-      workbook,
-      headersWithExams
+    formData = await request.formData();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al obtener el archivo excel del formdata",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
     );
-
-    return NextResponse.json(carreras);
-  } catch (error) {
-    return NextResponse.error();
   }
-}
 
+  const file: File | null = formData.get("file") as unknown as File;
+
+  if (!file) {
+    return NextResponse.json(
+      {
+        error_client: "No se ha enviado ningún archivo",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (file.length > 1) {
+    return NextResponse.json(
+      {
+        error_client: "Solo se puede subir un archivo",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (!isFileExcel(file)) {
+    return NextResponse.json(
+      {
+        error_client: "El archivo no es un excel",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  let bytes;
+
+  try {
+    bytes = await file.arrayBuffer();
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al convertir el archivo excel a bytes",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  let buffer;
+  try {
+    buffer = Buffer.from(bytes);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al convertir el archivo excel a buffer",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  let uploadPath;
+
+  try {
+    uploadPath = path.join(process.cwd(), "public", "uploads");
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al obtener la ruta de la carpeta uploads",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  let filePath;
+
+  try {
+    filePath = path.join(uploadPath, file.name);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al obtener la ruta del archivo excel",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  // Eliminamos los archivos que estén en la carpeta uploads
+  // y guardamos el archivo que se subió
+  try {
+    await handleFile(uploadPath, filePath, buffer);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al eliminar y guardar el archivo excel",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  let workbook;
+  try {
+    workbook = xlsx.readFile(filePath);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al leer el archivo excel",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  let headersWithExams;
+  try {
+    // Obtenemos los encabezados de la tabla
+    headersWithExams = getHeaders(workbook);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al obtener los encabezados de la tabla",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  let carreras;
+
+  try {
+    // Obtenemos las materias de cada carrera
+    carreras = extractSubjetsForEachCarrera(workbook, headersWithExams);
+  } catch (error: any) {
+    return NextResponse.json(
+      {
+        error_client: "Error al extraer las materias de cada carrera",
+        error: error.toString(),
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+
+  return NextResponse.json(carreras, {
+    status: 200,
+  });
+}
