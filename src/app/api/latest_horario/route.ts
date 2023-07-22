@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import puppeteer, { Browser, Page } from "puppeteer";
 
+enum ErrorCode {
+  ERROR_BROWSER_LAUNCH = "ERROR_BROWSER_LAUNCH",
+  ERROR_NEW_PAGE = "ERROR_NEW_PAGE",
+  ERROR_PAGE_GOTO = "ERROR_PAGE_GOTO",
+  ERROR_GET_H3_AND_LINK = "ERROR_GET_H3_AND_LINK",
+  ERROR_BROWSER_CLOSE = "ERROR_BROWSER_CLOSE",
+}
+
 export async function GET(request: Request) {
   let browser: Browser;
 
@@ -14,6 +22,7 @@ export async function GET(request: Request) {
       {
         error_client: "Error al iniciar el navegador",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_BROWSER_LAUNCH,
       },
       {
         status: 500,
@@ -30,6 +39,7 @@ export async function GET(request: Request) {
       {
         error_client: "Error al abrir una nueva página",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_NEW_PAGE,
       },
       {
         status: 500,
@@ -49,6 +59,7 @@ export async function GET(request: Request) {
       {
         error_client: "Error al abrir la página",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_PAGE_GOTO,
       },
       {
         status: 500,
@@ -86,6 +97,7 @@ export async function GET(request: Request) {
       {
         error_client: "Error al obtener el link o titulo",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_GET_H3_AND_LINK,
       },
       {
         status: 500,
@@ -100,6 +112,7 @@ export async function GET(request: Request) {
       {
         error_client: "Error al cerrar el navegador",
         error: error.toString(),
+        error_code: ErrorCode.ERROR_BROWSER_CLOSE,
       },
       {
         status: 500,
