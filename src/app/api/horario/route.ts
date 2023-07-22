@@ -122,94 +122,94 @@ export async function POST(request: Request) {
     );
   }
 
-  let uploadPath: string;
+  // let uploadPath: string;
 
-  try {
-    uploadPath = path.join(process.cwd(), "public", "uploads");
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        error_client: "Error al obtener la ruta de la carpeta uploads",
-        error: error.toString(),
-        error_code: ErrorCode.ERROR_UPLOAD_PATH,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  // try {
+  //   uploadPath = path.join(process.cwd(), "public", "uploads");
+  // } catch (error: any) {
+  //   return NextResponse.json(
+  //     {
+  //       error_client: "Error al obtener la ruta de la carpeta uploads",
+  //       error: error.toString(),
+  //       error_code: ErrorCode.ERROR_UPLOAD_PATH,
+  //     },
+  //     {
+  //       status: 500,
+  //     }
+  //   );
+  // }
 
-  let filePath;
+  // let filePath;
 
-  try {
-    filePath = path.join(uploadPath, file.name);
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        error_client: "Error al obtener la ruta del archivo excel",
-        error: error.toString(),
-        error_code: ErrorCode.ERROR_FILE_PATH,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  // try {
+  //   filePath = path.join(uploadPath, file.name);
+  // } catch (error: any) {
+  //   return NextResponse.json(
+  //     {
+  //       error_client: "Error al obtener la ruta del archivo excel",
+  //       error: error.toString(),
+  //       error_code: ErrorCode.ERROR_FILE_PATH,
+  //     },
+  //     {
+  //       status: 500,
+  //     }
+  //   );
+  // }
 
-  let filesFound;
+  // let filesFound;
 
-  try {
-    filesFound = await readdir(uploadPath);
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        error_client: "Error al leer los archivos de la carpeta uploads",
-        error: error.toString(),
-        error_code: ErrorCode.ERROR_READ_UPLOADS_FOLDER,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  // try {
+  //   filesFound = await readdir(uploadPath);
+  // } catch (error: any) {
+  //   return NextResponse.json(
+  //     {
+  //       error_client: "Error al leer los archivos de la carpeta uploads",
+  //       error: error.toString(),
+  //       error_code: ErrorCode.ERROR_READ_UPLOADS_FOLDER,
+  //     },
+  //     {
+  //       status: 500,
+  //     }
+  //   );
+  // }
 
-  try {
-    filesFound.forEach(async (file) => {
-      if (existsSync(path.join(uploadPath, file))) {
-        await unlink(path.join(uploadPath, file));
-      }
-    });
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        error_client: "Error al eliminar los archivos de la carpeta uploads",
-        error: error.toString(),
-        error_code: ErrorCode.ERROR_DELETE_FILES,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  // try {
+  //   filesFound.forEach(async (file) => {
+  //     if (existsSync(path.join(uploadPath, file))) {
+  //       await unlink(path.join(uploadPath, file));
+  //     }
+  //   });
+  // } catch (error: any) {
+  //   return NextResponse.json(
+  //     {
+  //       error_client: "Error al eliminar los archivos de la carpeta uploads",
+  //       error: error.toString(),
+  //       error_code: ErrorCode.ERROR_DELETE_FILES,
+  //     },
+  //     {
+  //       status: 500,
+  //     }
+  //   );
+  // }
 
-  try {
-    await writeFile(filePath, buffer);
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        error_client: "Error al guardar el archivo excel",
-        error: error.toString(),
-        error_code: ErrorCode.ERROR_READ_FILE,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  // try {
+  //   await writeFile(filePath, buffer);
+  // } catch (error: any) {
+  //   return NextResponse.json(
+  //     {
+  //       error_client: "Error al guardar el archivo excel",
+  //       error: error.toString(),
+  //       error_code: ErrorCode.ERROR_READ_FILE,
+  //     },
+  //     {
+  //       status: 500,
+  //     }
+  //   );
+  // }
 
   let workbook;
   try {
-    workbook = xlsx.readFile(filePath);
+    workbook = xlsx.read(buffer, { type: "buffer" });
   } catch (error: any) {
     return NextResponse.json(
       {
