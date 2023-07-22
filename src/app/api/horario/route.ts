@@ -47,8 +47,6 @@ export async function POST(request: Request) {
 
   const file: File | null = formData.get("file") as unknown as File;
 
-  console.log(file);
-
   if (!file) {
     return NextResponse.json(
       {
