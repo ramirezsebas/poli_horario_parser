@@ -67,8 +67,10 @@ export default function Home() {
 
     useEffect(() => {
         if (filteredMaterias) {
-            const totalPages = Math.ceil(filteredMaterias[0].materias.length / ITEMS_PER_PAGE);
-            setTotalPages(totalPages);
+            if (filteredMaterias[0]?.materias != null) {
+                const totalPages = Math.ceil(filteredMaterias[0].materias.length / ITEMS_PER_PAGE);
+                setTotalPages(totalPages);
+            }
         }
     }, [filteredMaterias]);
 
